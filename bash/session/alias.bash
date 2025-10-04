@@ -1,33 +1,46 @@
+_sd="$(dirname "${BASH_SOURCE[0]}")"
+
+# shellcheck source=bash/lib/os.bash
+. "${_sd}/../lib/os.bash"
+
+# shellcheck source=bash/lib/io.bash
+. "${_sd}/../lib/io.bash"
+
 declare -A _variant_by_cmd
 
+#
+# On a mac, install the gnu versions of the
+# bsd command below.  We will use GNU everywhere
+# and not bother learning BSD.
+#
 for c in "date" "grep" "xargs"; do
     if os_is_darwin; then
-	if ! os_have_cmd "g$c"; then
-	    io_warn "missing g$c: brew install g$c"
+	if ! os_have_cmd "g${c}"; then
+	    io_warn "missing g${c}: brew install g${c}"
 	fi
-	_variant_by_cmd["$c"]="g$c"
+	_variant_by_cmd["${c}"]="g${c}"
 
 	# default alias
-	eval "alias $c=g$c"
+	eval "alias ${c}=g${c}"
     else
-	_variant_by_cmd["$c"]="$c"
+	_variant_by_cmd["${c}"]="${c}"
     fi
 done
 
 function _get_cmd() {
-    local cmd="$1"
-    if [[ -v _variant_by_cmd["$cmd"] ]]; then
-	echo "${_variant_by_cmd[$cmd]}"
+    local cmd="${1}"
+    if [[ -v _variant_by_cmd["${cmd}"] ]]; then
+	echo "${_variant_by_cmd[${cmd}]}"
     else
-	echo "$cmd"
+	echo "${cmd}"
     fi
 }
-	
-    done
-fi
 
-alias ls="$(_get_cmd ls) color=auto "
-alias grep="$(_get_cmd grep) color=auto "
+# shellcheck disable=SC2139,SC2312
+alias ls="$(_get_cmd ls) --color=auto "
+
+# shellcheck disable=SC2139,SC2312
+alias grep="$(_get_cmd grep) --color=auto "
 
 if os_is_darwin; then
     if ! os_have_cmd pbcopy; then

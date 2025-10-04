@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        pass_filenames: true
+        types_or: [shell]
+        # lint only scripts in these dirs; adjust as you like:
+        files: ^bash/.*bash$
+        args:
+          - -x
+          - -P bash
+          - -o add-default-case,avoid-nullary-conditions,check-set-e-suppressed,check-unassigned-uppercase,deprecate-which,quote-safe-variables,require-double-brackets,require-variable-braces
+
